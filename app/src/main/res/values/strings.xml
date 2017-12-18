@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">MammalPodV</string>
+    <string name="established">Done!</string>
+    <string name="open">Open</string>
+    <string-array name="hero_responses_menu">
+        <item>Download</item>
+        <item>Set on ringtone</item>
+    </string-array>
+</resources>

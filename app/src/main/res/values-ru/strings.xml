@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MammalPodV</string>
+    <string name="established">Готово!</string>
+    <string name="open">Открыть</string>
+    <string-array name="hero_responses_menu">
+    <item>Скачать</item>
+    <item>Установить на уведомления</item>
+    </string-array>
+</resources>

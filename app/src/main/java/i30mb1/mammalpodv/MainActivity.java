@@ -1,20 +1,26 @@
 package i30mb1.mammalpodv;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -87,6 +93,67 @@ public class MainActivity extends AppCompatActivity {
         RingtoneManager.setActualDefaultRingtoneUri(MainActivity.this, RingtoneManager.TYPE_NOTIFICATION, ringtoneuri);
 
             Snackbar.make(inimation, R.string.established, Snackbar.LENGTH_SHORT).show();
+    }
+
+    String text = "";
+    public final static int REQUEST_PERMISSION = 1;
+    public final static int REQUEST_PERMISSION2 = 2;
+
+    public void init(final boolean a) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_SETTINGS)) {
+                Snackbar.make(recyclerView, R.string.all_grand_permission, Snackbar.LENGTH_INDEFINITE).setAction(R.string.all_enable,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                if(!a)
+                                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+                                else ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION2);
+                            }
+                        }).show();
+            } else {
+                if(!a)
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+                else
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION2);
+            }
+        } else {
+            if (!a)
+                new Mp3Loader(text, false).execute();
+            else
+                grandSetting();
+        }
+    }
+
+    private void grandSetting() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.System.canWrite(this)) {
+                new Mp3Loader(text, true).execute();
+            } else {
+                Snackbar.make(recyclerView, R.string.all_grand_permission, Snackbar.LENGTH_INDEFINITE).setAction(R.string.all_enable,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                                intent.setData(Uri.parse("package:" + getPackageName()));
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivityForResult(intent,0);
+                            }
+                        }).show();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.System.canWrite(this)) {
+                new Mp3Loader(text, true).execute();
+            } else {
+//                Snackbar.make(recyclerView, R.string.all_permission_denied, Snackbar.LENGTH_LONG).show();
+            }
+        }
     }
 
     public class Mp3Loader extends AsyncTask<String, Void, String> {
@@ -235,12 +302,15 @@ public class MainActivity extends AppCompatActivity {
                 builder.setItems(R.array.hero_responses_menu, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        text = name.getText().toString()+".ogg";
                         switch (which) {
                             case 0:
-                                new Mp3Loader(name.getText().toString()+".ogg", false).execute();
+                                init(false);
+//                                new Mp3Loader(name.getText().toString()+".ogg", false).execute();
                                 break;
                             case 1:
-                                new Mp3Loader(name.getText().toString()+".ogg", true).execute();
+                                init(true);
+//                                new Mp3Loader(name.getText().toString()+".ogg", true).execute();
                                 break;
                         }
                         dialog.dismiss();

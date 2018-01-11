@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MammalPodV</string>
+    <string name="all_grand_permission">Дайте разрешение</string>
+    <string name="all_enable">ОК</string>
+    <string name="all_enable_permission_from_setting">Дайте разрешение из настроек</string>
+    <string name="all_permission_denied">Отклоненно</string>
     <string name="established">Готово!</string>
     <string name="open">Открыть</string>
     <string-array name="hero_responses_menu">

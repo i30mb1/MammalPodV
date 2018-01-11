@@ -7,3 +7,6 @@
 /build
 /captures
 .externalNativeBuild
+app/libs/
+app/release/
+app/src/main/res/mipmap-anydpi-v26/

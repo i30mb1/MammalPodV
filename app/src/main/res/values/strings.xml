@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">MammalPodV</string>
+    <string name="all_grand_permission">Please Grand Permissions</string>
+    <string name="all_enable">ENABLE</string>
+    <string name="all_enable_permission_from_setting">Enable Permission from setting</string>
+    <string name="all_permission_denied">Permission denied</string>
     <string name="established">Done!</string>
     <string name="open">Open</string>
     <string-array name="hero_responses_menu">
